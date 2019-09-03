@@ -1,0 +1,26 @@
+TODO:
+- merge with "envup" project
+- get this tmux session back
+  - name "PHABRICATOR"
+  - PWD: ~/playground-skynet/
+  - LHS window
+    - window: CODE
+      - pane 1:
+        - PWD: ~/playground-skynet/codereview.git/
+        - CMD: n docker-compose.yml TODO.txt ~/dotfiles/winwin.txt
+      - pane 2:
+        - PWD: ~/playground-skynet/suqld_intranet.git/
+        - PRETYPE: arc diff --conduit-uri http://127.0.0.1 --base "$ruleset"
+  - RHS window
+    - window: 'Phabricator Compose'
+      - pane 1:
+        - PWD: ~/playground-skynet/codereview.git
+        - CMD: docker-compose up
+      - pane 2:
+        - PWD: ~/playground-skynet/codereview.git
+        - docker-compose exec phabricator bash
+
+
+Features that would be nice to have:
+- each pane's shell writes history when quitting:
+  https://github.com/tmux-plugins/tmux-resurrect/blob/c3ffe89e525a4692d9fa53235bbce1280d1d8311/scripts/save.sh#L145

@@ -80,8 +80,7 @@ def present_ui():
     #if not CONFIG_DIR.exists():
         #CONFIG_DIR.mkdir(parents=True)
 
-    # TODO: get list of existing sessions
-    #existing = []
+    _present_tmux_state()
 
     # TODO: get a list of historic session names
     #historic = []
@@ -96,6 +95,15 @@ def present_ui():
         ui_new_session(answer)
     else:
         raise Exception("TODO: resume the selected session")  # noqa
+
+
+def _present_tmux_state():
+    # print list of existing tmux sessions
+    tmux = libtmux.Server()
+    tmuxsessions = [s.get('session_name') for s in tmux.list_sessions()]
+    click.secho('Existing tmux sessions: {}'.format(len(tmuxsessions)), fg="cyan", dim=True)
+    for name in tmuxsessions:
+        click.secho('  {}'.format(name), fg="cyan", dim=True)
 
 
 # the main() hook here allows us to re-spawn winwin.cli.main() in a subprocess

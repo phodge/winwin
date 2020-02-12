@@ -80,6 +80,8 @@ def present_ui():
     #if not CONFIG_DIR.exists():
         #CONFIG_DIR.mkdir(parents=True)
 
+    _present_jerjerrod_state()
+
     _present_tmux_state()
 
     # TODO: get a list of historic session names
@@ -95,6 +97,34 @@ def present_ui():
         ui_new_session(answer)
     else:
         raise Exception("TODO: resume the selected session")  # noqa
+
+
+def _present_jerjerrod_state():
+    import jerjerrod.projects
+    import jerjerrod.caching
+
+    click.secho('Jerjerrod:', fg="magenta", dim=True)
+    jkwargs = {
+        'JERJERROD:CLEAN': dict(fg="magenta", dim=True),
+        'JERJERROD:CHANGED': dict(fg="red", bold=True),
+        'JERJERROD:UNPUSHED': dict(fg="yellow", dim=True),
+        'JERJERROD:UNTRACKED': dict(fg="red", dim=True),
+        'JERJERROD:GARBAGE': dict(fg="yellow", dim=True),
+    }
+    for p in jerjerrod.projects.get_all_projects(jerjerrod.caching.DiskCache(), {}):
+        status = p.getstatus(True)
+        label = status[10:]
+        if p.isignored:
+            label += '/IGNORED'
+            kwargs = jkwargs['JERJERROD:CLEAN']
+        else:
+            kwargs = jkwargs[status]
+
+        # don't show simple repos if they are clean
+        if status == 'JERJERROD:CLEAN' and not p.isworkspace:
+            continue
+
+        click.secho('> {} [{}]'.format(p.getname(), label), **kwargs)
 
 
 def _present_tmux_state():

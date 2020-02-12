@@ -130,9 +130,15 @@ def _present_jerjerrod_state():
 def _present_tmux_state():
     # print list of existing tmux sessions
     tmux = libtmux.Server()
-    tmuxsessions = [s.get('session_name') for s in tmux.list_sessions()]
-    click.secho('Existing tmux sessions: {}'.format(len(tmuxsessions)), fg="cyan", dim=True)
-    for name in tmuxsessions:
+    try:
+        sessions = tmux.list_sessions()
+    except libtmux.exc.LibTmuxException:
+        # probably the server isn't running
+        click.secho('No tmux sessions', fg="cyan", dim=True)
+        return
+    click.secho('Existing tmux sessions: {}'.format(len(sessions)), fg="cyan", dim=True)
+    for s in sessions:
+        name = s.get('session_name')
         click.secho('  {}'.format(name), fg="cyan", dim=True)
 
 

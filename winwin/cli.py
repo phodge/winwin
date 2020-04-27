@@ -121,7 +121,7 @@ def _present_jerjerrod_state():
             kwargs = jkwargs[status]
 
         # don't show simple repos if they are clean
-        if status == 'JERJERROD:CLEAN' and not p.isworkspace:
+        if status == 'JERJERROD:CLEAN' and not p.isworkspace and not p.spotlight:
             continue
 
         click.secho('> {} [{}]'.format(p.getname(), label), **kwargs)

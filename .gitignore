@@ -1,2 +1,5 @@
 *.eggs
 *.egg-info
+
+*.pyc
+.mpyp_cache

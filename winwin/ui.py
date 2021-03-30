@@ -2,18 +2,22 @@ import time
 
 import click
 
-from winwin.config import get_self_cmd
+from winwin.config import get_self_cmd, Config
 from winwin.constants import Platforms
 
 
 def ui_new_session(name: str) -> None:
+    cfg = Config()
+
     # FIXME: don't allow re-using session names
 
     # ask what platform name?
-
-    platform = click.prompt('What platform?',
-                            type=click.Choice([p.value for p in Platforms]),
-                            default=Platforms.TERMINAL_TMUX.value)
+    if cfg.force_platform:
+        platform = cfg.force_platform
+    else:
+        platform = click.prompt('What platform?',
+                                type=click.Choice([p.value for p in Platforms]),
+                                default=Platforms.TERMINAL_TMUX.value)
 
     # TODO: templates:
     # - if the user has created any templates, ask if they want to reuse an
@@ -21,7 +25,7 @@ def ui_new_session(name: str) -> None:
 
     # should the session be running on a remote host?
     remote_host = None
-    if click.confirm('Start session on a remote host?', default=False):
+    if cfg.allow_remote_sessions and click.confirm('Start session on a remote host?', default=False):
         remote_host = click.prompt("Enter a remote host name")
 
         # FIXME: confirm we can connect to the host and bail out if we can't

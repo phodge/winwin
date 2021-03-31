@@ -1,13 +1,9 @@
+import shlex
+import time
 from subprocess import check_call, Popen, DEVNULL
-
-
 from typing import Literal, List
 
 from winwin.config import Config
-
-import time
-import shlex
-
 
 
 def open_alacritty_gui(

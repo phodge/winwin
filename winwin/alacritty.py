@@ -14,8 +14,6 @@ def open_alacritty_gui(
 ) -> None:
     opts = cfg.get_screen_opts(opt_group)
     cmd = ['nohup', cfg.alacritty_path, '--title', title]
-    # FIXME: remove this hack
-    cmd.extend(['--working-directory', '/Users/peter/dotfiles.git/winwin.git'])
 
     # FIXME: also remove this hack
     cmd.extend(['-o', 'window.decorations=full'])

@@ -25,5 +25,5 @@ def open_alacritty_gui(
     # command crashes
     cmd.extend(['/bin/bash', '-c', shlex.join(command) + ' || sleep 10'])
     check_call([
-        '/bin/bash', '-c', shlex.join(cmd) + ' &',
+        '/bin/bash', '-i', '-c', shlex.join(cmd) + ' &',
     ], stdout=DEVNULL, stderr=DEVNULL)

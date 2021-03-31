@@ -22,8 +22,9 @@ def open_alacritty_gui(
             cmd.extend(['-o', '{}={}'.format(name, val)])
     cmd.append('--command')
     # This is just here to try and keep the window open for a bit if the
-    # command crashes
-    cmd.extend(['/bin/bash', '-c', shlex.join(command) + ' || sleep 10'])
+    # command crashes.
+    # Note: this needs to be /bin/zsh or tmux will boot up with the wrong shell
+    cmd.extend([cfg.shell_executable, '-c', shlex.join(command) + ' || sleep 10'])
     check_call([
         '/bin/bash', '-i', '-c', shlex.join(cmd) + ' &',
     ], stdout=DEVNULL, stderr=DEVNULL)

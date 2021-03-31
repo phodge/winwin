@@ -41,6 +41,10 @@ class Config:
         return True if self._config.get('remote_sessions') else False
 
     @property
+    def shell_executable(self) -> str:
+        return self._config.get('default_shell', '/bin/bash')
+
+    @property
     def terminal_is_alacritty(self) -> bool:
         return self._config.get('terminal_app') == 'alacritty'
 

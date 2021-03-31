@@ -21,6 +21,8 @@ def open_alacritty_gui(
         if val is not None:
             cmd.extend(['-o', '{}={}'.format(name, val)])
     cmd.append('--command')
+    # This is just here to try and keep the window open for a bit if the
+    # command crashes
     cmd.extend(['/bin/bash', '-c', shlex.join(command) + ' || sleep 10'])
     check_call([
         '/bin/bash', '-c', shlex.join(cmd) + ' &',

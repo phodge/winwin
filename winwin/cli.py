@@ -120,8 +120,22 @@ def _present_jerjerrod_state():
         else:
             kwargs = jkwargs[status]
 
-        # don't show simple repos if they are clean
-        if not p.isworkspace:
+        if p.isworkspace:
+            not_interesting = {'master', 'main'}
+            branches = [branch for branch in p.get_branches(False) if branch not in not_interesting]
+            branchstr = "|".join(branches)
+            more = 0
+            while branches and len(branchstr) >= 60:
+                more += 1
+                branches = branches[:-1]
+                branchstr = "{}|+{} more".format("|".join(branches), more)
+            if branches:
+                label += '|' + branchstr
+            elif more:
+                # if every branch name was too long to fit
+                label += '|{} branches'.format(more)
+        else:
+            # don't show simple repos if they are clean
             if status != 'JERJERROD:CLEAN':
                 branch = p.getbranch(False)
                 if branch:

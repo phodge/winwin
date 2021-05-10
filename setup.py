@@ -14,6 +14,6 @@ setup(
     # automatic version number using setuptools_scm
     setup_requires=['setuptools_scm'],
     use_scm_version={
-        "write_to": 'winwin/__init__.py',
+        "write_to": 'winwin/_version.py',
     },
 )

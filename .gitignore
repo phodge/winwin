@@ -3,3 +3,4 @@
 
 *.pyc
 .mpyp_cache
+winwin/_version.py

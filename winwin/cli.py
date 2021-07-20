@@ -122,7 +122,7 @@ def _present_jerjerrod_state():
 
         if p.isworkspace:
             not_interesting = {'master', 'main'}
-            branches = [branch for branch in p.get_branches(False) if branch not in not_interesting]
+            branches = [branch or '<no-branch>' for branch in p.get_branches(False) if branch not in not_interesting]
             branchstr = "|".join(branches)
             more = 0
             while branches and len(branchstr) >= 60:

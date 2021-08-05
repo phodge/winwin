@@ -1,10 +1,12 @@
 #import xdg.BaseDirectory
 import json
 import os
+import os.path
 import sys
 from shlex import quote
 from pathlib import Path
-from typing import List, Optional, Literal, Dict
+from typing import List, Optional, Literal, Dict, Tuple
+from subprocess import run, PIPE
 
 
 def get_self_cmd(args: List[str]) -> List[str]:
@@ -15,6 +17,36 @@ def get_self_cmd(args: List[str]) -> List[str]:
 
 def get_self_cmd_str(args: List[str]) -> str:
     return ' '.join([quote(x) for x in get_self_cmd(args)])
+
+
+class UpstreamConfig:
+    def __init__(self, label: str, local_clone: Path, search_prefix: str) -> None:
+        assert len(search_prefix)
+
+        self._label: str = label
+        self._local_clone: Path = local_clone
+        self._search_prefix: str = search_prefix
+
+    @property
+    def label(self) -> str:
+        return self._label
+
+    def get_upstream_branches(self) -> List[Tuple[str, str, str]]:
+        branches = []
+        cmd = [
+            'git',
+            'branch',
+            '--remote',
+            '--format',
+            '%(objectname)|%(refname:lstrip=3)|%(contents:subject)',
+        ]
+        result = run(cmd, cwd=self._local_clone, check=True, stdout=PIPE, encoding='utf-8')
+        for line in result.stdout.splitlines():
+            parts = line.split('|', 2)
+            assert len(parts) == 3
+            if parts[1].startswith(self._search_prefix):
+                branches.append((parts[0], parts[1], parts[2]))
+        return branches
 
 
 class Config:
@@ -78,3 +110,13 @@ class Config:
             raise NotImplementedError()
 
         return {k: str(v) for k, v in data.items() if v is not None}
+
+    def get_upstream_repositories(self) -> List[UpstreamConfig]:
+        upstreams = []
+        for entry in self._config.get('upstream_repositories', []):
+            upstreams.append(UpstreamConfig(
+                entry.get('label', os.path.basename(entry['local_clone'])),
+                Path(entry['local_clone']).expanduser(),
+                entry['search_prefix'],
+            ))
+        return upstreams

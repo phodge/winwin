@@ -5,6 +5,7 @@ import click
 import libtmux
 
 from winwin.ui import ui_new_session
+from winwin.config import Config
 
 
 @click.group()
@@ -80,7 +81,11 @@ def present_ui():
     #if not CONFIG_DIR.exists():
         #CONFIG_DIR.mkdir(parents=True)
 
+    cfg = Config()
+
     _present_jerjerrod_state()
+
+    _present_upstream_branches(cfg)
 
     _present_tmux_state()
 
@@ -144,6 +149,27 @@ def _present_jerjerrod_state():
                 continue
 
         click.secho('> {} [{}]'.format(p.getname(), label), **kwargs)
+
+
+def _present_upstream_branches(cfg: Config) -> None:
+    upstream_repositories = cfg.get_upstream_repositories()
+
+    if not len(upstream_repositories):
+        return
+
+    for upstream in upstream_repositories:
+        click.secho('Upstream: ', fg="blue", nl=False)
+        click.secho(upstream.label, fg="blue", nl=False, bold=True)
+
+        # what are the remote branches?
+        branches = upstream.get_upstream_branches()
+        if len(branches):
+            click.secho(f' [{len(branches)}]', fg="blue", bold=True)
+            for commitsha, refname, subject in branches:
+                click.secho('* ' + refname + ' ', fg="blue", nl=False)
+                click.secho(subject[:40], fg="blue", dim=True)
+        else:
+            click.secho(' [no personal branches]', fg="blue", dim=True)
 
 
 def _present_tmux_state():

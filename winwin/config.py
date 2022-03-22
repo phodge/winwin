@@ -54,6 +54,8 @@ class Config:
         self._load()
 
     def _load(self):
+        self._config = {}
+
         HOME = os.getenv('HOME')
         if not HOME:
             return

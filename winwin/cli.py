@@ -116,7 +116,11 @@ def _present_jerjerrod_state():
         'JERJERROD:UNTRACKED': dict(fg="red", dim=True),
         'JERJERROD:GARBAGE': dict(fg="yellow", dim=True),
     }
-    for p in jerjerrod.projects.get_all_projects(jerjerrod.caching.DiskCache(), {}):
+    all_projects = sorted(
+        jerjerrod.projects.get_all_projects(jerjerrod.caching.DiskCache(), {}),
+        key=lambda p: p.getname(),
+    )
+    for p in all_projects:
         status = p.getstatus(True)
         label = status[10:]
         if p.isignored:

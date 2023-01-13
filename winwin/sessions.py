@@ -183,7 +183,7 @@ def get_tmux_session_info(session_name: str) -> TmuxSessionInfo:
     # find the primary/secondary sessions by name
     sess1: libtmux.Session = None
     sess2: libtmux.Session = None
-    for sess in tmux.list_sessions():
+    for sess in tmux.sessions:
         if sess.get('session_name') == session_name:
             if sess1 is not None:
                 raise Exception('Multiple tmux sessions with name {!r}'.format(

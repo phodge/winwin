@@ -3,10 +3,10 @@ import json
 import os
 import os.path
 import sys
-from shlex import quote
 from pathlib import Path
-from typing import List, Optional, Literal, Dict, Tuple
-from subprocess import run, PIPE
+from shlex import quote
+from subprocess import PIPE, run
+from typing import Dict, List, Literal, Optional, Set, Tuple
 
 
 def get_self_cmd(args: List[str]) -> List[str]:
@@ -20,18 +20,26 @@ def get_self_cmd_str(args: List[str]) -> str:
 
 
 class UpstreamConfig:
-    def __init__(self, label: str, local_clone: Path, search_prefix: str) -> None:
+    def __init__(
+        self,
+        label: str,
+        local_clone: Path,
+        search_prefix: str,
+        ignore_branches: list[str],
+    ) -> None:
         assert len(search_prefix)
 
         self._label: str = label
         self._local_clone: Path = local_clone
         self._search_prefix: str = search_prefix
+        self._ignore_branches: Set[str] = set(ignore_branches)
 
     @property
     def label(self) -> str:
         return self._label
 
     def get_upstream_branches(self) -> List[Tuple[str, str, str]]:
+        """Returns tuples of commitsha, refname, subject"""
         branches = []
         cmd = [
             'git',
@@ -44,8 +52,9 @@ class UpstreamConfig:
         for line in result.stdout.splitlines():
             parts = line.split('|', 2)
             assert len(parts) == 3
-            if parts[1].startswith(self._search_prefix):
-                branches.append((parts[0], parts[1], parts[2]))
+            refname = parts[1]
+            if refname.startswith(self._search_prefix) and refname not in self._ignore_branches:
+                branches.append((parts[0], refname, parts[2]))
         return branches
 
 
@@ -116,9 +125,11 @@ class Config:
     def get_upstream_repositories(self) -> List[UpstreamConfig]:
         upstreams = []
         for entry in self._config.get('upstream_repositories', []):
+            ignore_branches = entry.get('ignore_branches', [])
             upstreams.append(UpstreamConfig(
                 entry.get('label', os.path.basename(entry['local_clone'])),
                 Path(entry['local_clone']).expanduser(),
                 entry['search_prefix'],
+                ignore_branches,
             ))
         return upstreams

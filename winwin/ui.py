@@ -32,7 +32,7 @@ def ui_new_session(name: str) -> None:
         # get to it
 
     # do they want a 2nd terminal window on the second screen?
-    want_2nd_terminal = click.confirm(
+    want_2nd_terminal = cfg.allow_multiple_screens and click.confirm(
         'Show 2nd terminal on other screen?',
         default=None,
     )

@@ -84,6 +84,10 @@ class Config:
         return True if self._config.get('remote_sessions') else False
 
     @property
+    def allow_multiple_screens(self) -> bool:
+        return self._config.get('allow_multiple_screens', True)
+
+    @property
     def shell_executable(self) -> str:
         return self._config.get('default_shell', '/bin/bash')
 

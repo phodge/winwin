@@ -95,7 +95,7 @@ class Config:
     def alacritty_path(self) -> str:
         return self._config.get('alacritty_path', 'alacritty')
 
-    def get_screen_opts(self, screen_name: Literal['main', 'secondary']) -> Dict[str, str]:
+    def get_alacritty_screen_opts(self, screen_name: Literal['main', 'secondary']) -> Dict[str, str]:
         if screen_name == 'main':
             data = {
                 'window.dimensions.columns': self._config.get('main_screen_columns'),

@@ -12,7 +12,7 @@ def open_alacritty_gui(
     command: List[str],
     opt_group: Literal['main', 'secondary'],
 ) -> None:
-    opts = cfg.get_screen_opts(opt_group)
+    opts = cfg.get_alacritty_screen_opts(opt_group)
     cmd = ['nohup', cfg.alacritty_path, '--title', title]
 
     # FIXME: also remove this hack

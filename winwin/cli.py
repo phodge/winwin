@@ -187,7 +187,7 @@ def _present_tmux_state():
         return
     click.secho('Existing tmux sessions: {}'.format(len(sessions)), fg="cyan", dim=True)
     for s in sessions:
-        name = s.get('session_name')
+        name = s.name
         click.secho('  {}'.format(name), fg="cyan", dim=True)
 
 

@@ -105,8 +105,12 @@ def present_ui():
 
 
 def _present_jerjerrod_state():
-    import jerjerrod.projects
-    import jerjerrod.caching
+    try:
+        import jerjerrod.projects
+        import jerjerrod.caching
+    except ImportError:
+        click.secho('Jerjerrod: NOT INSTALLED', fg="magenta", dim=True)
+        return
 
     click.secho('Jerjerrod:', fg="magenta", dim=True)
     jkwargs = {
